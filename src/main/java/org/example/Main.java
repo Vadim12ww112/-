@@ -10,16 +10,16 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         ListBooX baza = new ListBooX();//база
-        File file = new File("./file.txt");
+        File file = new File("./file.txt");// создание файла
         if (file.createNewFile()) {
-            System.out.println("Файл успешно был создан");
+            System.out.println("Файл успешно был создан");        // несколько строк с проверкой на наличие файла
         } else {
             System.out.println("Файл уже существует");
         }
         try (FileReader fileReader = new FileReader(file)) {
             Scanner fileScanner = new Scanner(fileReader);
             if (fileScanner.hasNextLine()) {
-                String str2 = fileScanner.nextLine();
+                String str2 = fileScanner.nextLine();// сдесь происходит чтение файла, наверное
                 Gson gson = new Gson();
                 baza = gson.fromJson(str2, ListBooX.class);
             }
@@ -59,7 +59,7 @@ public class Main {
                    allZP(baza);
                     break;
                 case 6:allPeople(baza);break;
-                case 7:{
+                case 7:{// завершение работы  и запись данных в файл
                     Gson gson = new Gson();
                     String str1 = gson.toJson(baza);
                     try (FileWriter fileWriter = new FileWriter(file)) {
@@ -78,7 +78,7 @@ public class Main {
 
     }
 
-    public static void mainMenu() {
+    public static void mainMenu() {// метод вывода менюшки
         System.out.println("Выберите нужное действие: \n" +
                 "1 - Добавить данные \n" +
                 "2 - Вывести все данные\n" +
@@ -90,7 +90,7 @@ public class Main {
 
     }
 
-    public static Staff adddBook() {//
+    public static Staff adddBook() {// метод заполнения массива данными
         int b=0;
         Scanner scanner = new Scanner(System.in);
         Staff booX = new Staff();
@@ -114,7 +114,7 @@ public class Main {
         return booX;
     }
 
-    public static void allBooks(ListBooX masBook) {
+    public static void allBooks(ListBooX masBook) { // все книги, вывод
 
 
         int i = 1;
@@ -129,25 +129,9 @@ public class Main {
     }
 
 
-    public static Staff searchMenu(ListBooX baza) {
-        System.out.println("Введите данные для поиска книги: ");
-        Scanner scanner = new Scanner(System.in);
-        Staff result = null;
-        String textSearch;
-        textSearch = scanner.nextLine();
-        for (Staff kniga : baza.getData()) {
-            if (kniga.getVadim().equals(textSearch) ||
-                    kniga.getVsenko().equals(textSearch) ||
-                    kniga.getNikolaevich().indexOf(textSearch) > -1) {
-                result = kniga;
-                break;
-            }
-        }
-        System.out.println("Вот, что мне удалось найти:  \n" + result);
-        return result;
-    }
 
-    public static void maxZP(ListBooX baza) {
+
+    public static void maxZP(ListBooX baza) { //метод макс зп
         int sum = 0;
         String name = null; //Пустота
         for (Staff sigma : baza.getData()) {
@@ -161,7 +145,7 @@ public class Main {
 
     }
 
-    public static void allZP(ListBooX baza) {
+    public static void allZP(ListBooX baza) { //всё зп расчёт
         int sum = 0;
 
         for (Staff sigma : baza.getData()) {
