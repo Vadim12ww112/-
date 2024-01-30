@@ -23,7 +23,7 @@ public class Main {
                 Gson gson = new Gson();
                 baza = gson.fromJson(str2, ListBooX.class);
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {//
             System.out.println("Файл не найден ");
         } catch (IOException e) {
 
