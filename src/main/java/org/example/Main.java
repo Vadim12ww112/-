@@ -1,67 +1,81 @@
 package org.example;
 
-
 import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.Scanner;
 
+
 public class Main {
     public static void main(String[] args) throws IOException {
+        Employee[] employeesArray = new Employee[10];
+
+        employeesArray[0] = new Employee("Иванов Иван Иванович", 1, 50000.0);
+        employeesArray[1] = new Employee("Петров Петр Петрович", 2, 60000.0);
+
+
         Scanner scanner = new Scanner(System.in);
-        ListBooX baza = new ListBooX();//база
-        File file = new File("./file.txt");// создание файла
+
+
+        File file = new File("./file.txt");
         if (file.createNewFile()) {
-            System.out.println("Файл успешно был создан");        // несколько строк с проверкой на наличие файла
+            System.out.println("Файл успешно был создан");
         } else {
             System.out.println("Файл уже существует");
         }
         try (FileReader fileReader = new FileReader(file)) {
             Scanner fileScanner = new Scanner(fileReader);
             if (fileScanner.hasNextLine()) {
-                String str2 = fileScanner.nextLine();// сдесь происходит чтение файла, наверное
+                String str2 = fileScanner.nextLine();
                 Gson gson = new Gson();
-                baza = gson.fromJson(str2, ListBooX.class);
+                employeesArray = new Employee[]{gson.fromJson(str2, Employee.class)};
             }
-        } catch (FileNotFoundException e) {//
-            System.out.println("Файл не найден ");
-        } catch (IOException e) {
+        }catch (FileNotFoundException e){
+            System.out.println("Файл не найден ");}catch (IOException e){
 
             throw new RuntimeException(e);
         }
-        int Menu = 0;
+        int menu = 0;
+
         do {
             try {
 
                 mainMenu();
                 String S = scanner.nextLine();
-                ;
-                Menu = Integer.parseInt(S);
+
+                menu = Integer.parseInt(S);
             } catch (Exception e) {
                 System.out.println("Введено не число");
             }
-            switch (Menu) {
-                case 1:
-                    baza.getData().add(adddBook());
-                    break;
-                case 2:
-                    allBooks(baza);
-                    break;
-                case 3:
-                    maxZP(baza);
+            switch (menu) {
+
+
+                case 1:findEmployeeWithMinSalary(employeesArray);
 
                     break;
-                case 4:
-                    minZP(baza);
-                    //searchMenu(baza);
+                case 2:printAllEmployees(employeesArray); break;
+
+                case 3: findEmployeeWithMaxSalary(employeesArray);
+
                     break;
-                case 5:
-                   allZP(baza);
+                case 4: calculateAverageSalary(employeesArray);
+
                     break;
-                case 6:allPeople(baza);break;
-                case 7:{// завершение работы  и запись данных в файл
+
+                case 8:;
+
+                    break;
+                case 5:calculateTotalSalary(employeesArray);
+
+                    break;
+
+                case 6: printFullNames(employeesArray);
+
+                    break;
+
+                case 7: {
                     Gson gson = new Gson();
-                    String str1 = gson.toJson(baza);
+                    String str1 = gson.toJson(employeesArray);
                     try (FileWriter fileWriter = new FileWriter(file)) {
                         fileWriter.write(str1);
                         System.out.println("Данные успешно созранены в файл ");
@@ -69,121 +83,157 @@ public class Main {
                         throw new RuntimeException(e);
                     }
                     System.out.println("До свидание!");
+
                 }
                 break;
+                default:
+                    ;
+
+                    System.out.println("Я начинаю догадываться, почему у тебя проблемы ");
             }
+            }while (menu != 7) ;
 
-        } while (Menu != 7);
+
+        }
 
 
-    }
 
-    public static void mainMenu() {// метод вывода менюшки
+
+
+
+    public static void mainMenu() {
         System.out.println("Выберите нужное действие: \n" +
-                "1 - Добавить данные \n" +
-                "2 - Вывести все данные\n" +
-                "3 - Сотрудник с большей ЗП\n" +
-                "4 - Сотрудник с минимальной ЗП\n" +
-                "5 - Сума затрат на зп \n"+
-                "6 - ФИО всех сотрудников \n"+
-                "7 - закрыть программу\n");
-
-    }
-
-    public static Staff adddBook() {// метод заполнения массива данными
-        int b=0;
-        Scanner scanner = new Scanner(System.in);
-        Staff booX = new Staff();
-        booX.setId(String.valueOf(b++));
-        System.out.println("Введите Имя сотрудника; ");
-        booX.setVadim(scanner.nextLine());
-        System.out.println("Введите Фамилия сотрудника; ");
-        booX.setVsenko(scanner.nextLine());
-        System.out.println("Введите Отчество сотрудника; ");
-        booX.setNikolaevich(scanner.nextLine());
-        try {
-
-            System.out.println("Введите Отдел сотрудника; ");
-
-            booX.setDepartment(scanner.nextInt());
-            System.out.println("Введите ЗП сотрудника; ");
-            booX.setZP(scanner.nextInt());
-        } catch (Exception o) {
-            System.out.println("Введено не число, все данные кроме последующтх будут внесены ╰（‵□′）╯");
-        }
-        return booX;
-    }
-
-    public static void allBooks(ListBooX masBook) { // все книги, вывод
-
-
-        int i = 1;
-        int b = 0;
-        for (Staff bookaz : masBook.getData()) {
-            b++;
-            System.out.println("раб №" + i++ + '\n' + bookaz.toString());
-
-
-        }
+                "1 - С меньшей зп \n" +
+                "2 - Вывести \n" +
+                "3 - С большей зп \n" +
+                "4 - Средняя зп\n" +
+                "5 - Вся зп\n"+
+                "6 - Все имена\n"+
+        "7 - закрыть программу\n");
 
     }
 
 
-
-
-    public static void maxZP(ListBooX baza) { //метод макс зп
-        int sum = 0;
-        String name = null; //Пустота
-        for (Staff sigma : baza.getData()) {
-            if (sum < sigma.getZP()) {
-                sum = sigma.getZP();
-                name = sigma.getVadim();
+    private static void printAllEmployees(Employee[] employees) {
+        System.out.println("Список всех сотрудников:");
+        for (Employee employee : employees) {
+            if (employee != null) {
+                System.out.println(employee);
             }
         }
-        System.out.println("больший ЗП у " + name + '\n' + sum + "р");
-
-
     }
 
-    public static void allZP(ListBooX baza) { //всё зп расчёт
-        int sum = 0;
 
-        for (Staff sigma : baza.getData()) {
-            sum += sigma.getZP();
+    private static void calculateTotalSalary(Employee[] employees) {
+        double totalSalary = 0;
+        for (Employee employee : employees) {
+            if (employee != null) {
+                totalSalary += employee.getSalary();
+            }
         }
+        System.out.println("Сумма затрат на зарплаты в месяц: " + totalSalary + "\n");
+    }
 
-        System.out.println("Обшие затраты на ЗП  "+sum +"р");
+    private static void findEmployeeWithMinSalary(Employee[] employees) {
+        Employee minSalaryEmployee = null;
+        for (Employee employee : employees) {
+            if (employee != null) {
+                if (minSalaryEmployee == null || employee.getSalary() < minSalaryEmployee.getSalary()) {
+                    minSalaryEmployee = employee;
+                }
+            }
+        }
+        System.out.println("Сотрудник с минимальной зарплатой: " + minSalaryEmployee + "\n");
+    }
 
+    private static void findEmployeeWithMaxSalary(Employee[] employees) {
+        Employee maxSalaryEmployee = null;
+        for (Employee employee : employees) {
+            if (employee != null) {
+                if (maxSalaryEmployee == null || employee.getSalary() > maxSalaryEmployee.getSalary()) {
+                    maxSalaryEmployee = employee;
+                }
+            }
+        }
+        System.out.println("Сотрудник с максимальной зарплатой: " + maxSalaryEmployee + "\n");
+    }
+
+    private static void calculateAverageSalary(Employee[] employees) {
+        int count = 0;
+        double totalSalary = 0;
+        for (Employee employee : employees) {
+            if (employee != null) {
+                count++;
+                totalSalary += employee.getSalary();
+            }
+        }
+        double averageSalary = (count > 0) ? (totalSalary / count) : 0;
+        System.out.println("Среднее значение зарплат: " + averageSalary + "\n");
+    }
+
+    private static void printFullNames(Employee[] employees) {
+        System.out.println("Ф. И. О. всех сотрудников:");
+        for (Employee employee : employees) {
+            if (employee != null) {
+                System.out.println(employee.getFullName());
+            }
+        }
+    }
 }
 
 
-    public static void minZP(ListBooX baza) {
-        int sum = 0;
-        String name = null;
-        for (Staff sigma : baza.getData()) {
-
-            if (sum > sigma.getZP()) {
-                sum = sigma.getZP(); //зп
-                name = sigma.getVadim();//Имя
-            }else if (sum==0)sum= sigma.getZP();
-        }
-        System.out.println("Меньшее ЗП у " + name + '\n' + sum + "р");
-
-    }
-
-    public static void allPeople(ListBooX masBook) {
 
 
-        int i = 1;
-        int b = 0;
-        for (Staff bookaz : masBook.getData()) {
-            b++;
-            System.out.println("№" + i++ +'\n'+ bookaz.getVsenko()+bookaz.getVadim()+bookaz.getNikolaevich());
 
 
-        }
-
-    }
 
 
-}
+////TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+//// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+//public class Main {
+//    int Menu = 0;
+//        do {
+//        try {
+//            Scanner scanner;
+//            String S = scanner.nextLine();
+//            ;
+//            Menu = Integer.parseInt(S);
+//        } catch (Exception e) {
+//            System.out.println("Введено не число");
+//        }
+//  switch (Menu) {
+//        case 1:
+//            baza.getData().add(adddBook());
+//            break;
+//        case 2:
+//            allBooks(baza);
+//            break;
+//        case 3:
+//            maxZP(baza);
+//
+//            break;
+//        case 4:
+//            minZP(baza);
+//            //searchMenu(baza);
+//            break;
+//        case 5:
+//            allZP(baza);
+//            break;
+//        case 6:allPeople(baza);break;
+//        case 7:{// завершение работы  и запись данных в файл
+//            Gson gson = new Gson();
+//            String str1 = gson.toJson(baza);
+//            try (FileWriter fileWriter = new FileWriter(file)) {
+//                fileWriter.write(str1);
+//                System.out.println("Данные успешно созранены в файл ");
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            System.out.println("До свидание!");
+//        }
+//        break;
+//    }
+//
+//} while (Menu != 7);
+//
+//        }
